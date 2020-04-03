@@ -4,6 +4,13 @@
         "aws_region": "us-east-1",
         "project_name": "pin-manager",
         "runtime": "python3.7",
-        "s3_bucket": "zappa-7tpv9slg3"
+        "s3_bucket": "pin-manager-dev"
+    },
+    "prod": {
+        "app_function": "pin-manager.app",
+        "aws_region": "us-east-1",
+        "project_name": "pin-manager",
+        "runtime": "python3.7",
+        "s3_bucket": "pin-manage-prod"
     }
 }
