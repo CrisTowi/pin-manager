@@ -9,4 +9,11 @@ workflows:
             branches:
               only: master
           python_version: '3.6'
-          stage: dev
+          stage: prod
+
+      - zappa/zappa-deploy:
+        filters:
+          branches:
+            only: dev
+        python_version: '3.6'
+        stage: dev
