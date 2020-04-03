@@ -1,5 +1,5 @@
 orbs:
-  zappa: 'borb/zappa@dev:master'
+  zappa: 'borb/zappa@0.1.0'
 version: 2.1
 workflows:
   deploy:
@@ -12,8 +12,8 @@ workflows:
           stage: prod
 
       - zappa/zappa-deploy:
-        filters:
-          branches:
-            only: dev
-        python_version: '3.6'
-        stage: dev
+          filters:
+            branches:
+              only: dev
+          python_version: '3.6'
+          stage: dev
