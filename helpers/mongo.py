@@ -19,15 +19,30 @@ class PINMongoClient:
   def assign_pin(self, pin_info):
     db = self.mongo_client.pin_manager
 
+    card_pin = db.pin.find_one({"card_id": pin_info["card_id"]})
+
+    if card_pin["pin"]:
+      raise Exception("Card already has a PIN assigned")  
+
     return db.pin.insert_one(pin_info)
 
-  def retrieve_pin(self, client_id):
+  def retrieve_pin(self, card_id):
     db = self.mongo_client.pin_manager
 
-    return db.pin.find_one({"client_id": client_id})
+    card_pin = db.pin.find_one({"card_id": card_id})
 
-  def set_new_password(self, client_id, new_password):
+    if not card_pin:
+      raise Exception("No card with the id")  
+
+    return card_pin
+
+  def set_new_password(self, card_id, new_password):
     db = self.mongo_client.pin_manager
 
-    return db.pin.update({"client_id": client_id}, {"$set": { "password": new_password }})
+    card_pin = db.pin.find_one({"card_id": card_id})
+
+    if not card_pin:
+      raise Exception("No card with the id")
+
+    return db.pin.update({"card_id": card_id}, {"$set": { "password": new_password }})
 

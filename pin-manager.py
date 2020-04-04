@@ -1,9 +1,10 @@
+
 # Packages
 from flask import Flask, request
-from cryptography.fernet import Fernet
 
 # Helpers
 from helpers.mongo import PINMongoClient
+from helpers.crypto import encrypt_pin, decrypt_pin, encrypt_password
 
 # Flash config
 app = Flask(__name__)
@@ -11,49 +12,61 @@ app = Flask(__name__)
 # Mongo setup
 mongo_client = PINMongoClient()
 
-key = Fernet.generate_key()
-f = Fernet(key)
-
 @app.route("/assign_pin", methods=["POST"])
 def assign_pin():
-  client_id = request.json["client_id"]
+  card_id = request.json["card_id"]
   pin = request.json["pin"]
   password = request.json["password"]
 
-  encripted_pin = f.encrypt(pin.encode("utf-8"))
-  encripted_password = hash(password)
+  encrypted_pin = encrypt_pin(pin)
+  encrypted_password = encrypt_password(password)
 
-  mongo_client.assign_pin({
-    "client_id": client_id,
-    "pin": encripted_pin,
-    "password": encripted_password
-  })
+  try:
+    mongo_client.assign_pin({
+      "card_id": card_id,
+      "pin": encrypted_pin,
+      "password": encrypted_password
+    })
+  except Exception as err:
+    return err.args[0], 500
 
   return "Success", 200
 
 @app.route("/retrieve_pin", methods=["POST"])
 def retrieve_pin():
-  client_id = request.json["client_id"]
+  card_id = request.json["card_id"]
   password = request.json["password"]
 
-  client_pin = mongo_client.retrieve_pin(client_id)
+  encrypted_password = encrypt_password(password)
 
-  if hash(password) == client_pin["password"]:
-    decrpyt_pin = f.decrypt(client_pin["pin"])
-    return decrpyt_pin, 200
+  try:
+    card_pin = mongo_client.retrieve_pin(card_id)
+  except Exception as err:
+    return err.args[0], 404
+
+  if encrypted_password == card_pin["password"]:
+    decrypted_pin = decrypt_pin(card_pin["pin"])
+    return decrypted_pin, 200
 
   return "Invalid password", 403
 
 @app.route("/reset_password", methods=["PUT"])
 def reset_password():
-  client_id = request.json["client_id"]
+  card_id = request.json["card_id"]
   password = request.json["password"]
   new_password = request.json["new_password"]
 
-  client_pin = mongo_client.retrieve_pin(client_id)
+  encrypted_password = encrypt_password(password)
 
-  if hash(password) == client_pin["password"]:
-    mongo_client.set_new_password(client_id, hash(new_password))
+  try:
+    card_pin = mongo_client.retrieve_pin(card_id)
+  except Exception as err:
+    return err.args[0], 404
+
+  if encrypted_password == card_pin["password"]:
+    encrypted_new_password = encrypt_password(new_password)
+
+    mongo_client.set_new_password(card_id, encrypted_new_password)
     return "Success", 200
 
   return "Invalid password", 403
