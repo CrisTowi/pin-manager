@@ -1,15 +1,19 @@
+# Standard library
 import os
+
+# Packages
 from pymongo import MongoClient
 
 address = os.environ["MONGO_ADDRESS"]
 port = os.environ["MONGO_PORT"]
 username = os.environ["MONGO_USERNAME"]
 password = os.environ["MONGO_PASSWORD"]
+auth_db = os.environ["MONGO_AUTH_DB"]
 
 class PINMongoClient:
   def __init__(self):
     self.mongo_client = MongoClient(
-      f'mongodb://{username}:{password}@{address}:{port}/pin_manager?retryWrites=false'
+      f"mongodb://{username}:{password}@{address}:{port}/{auth_db}?retryWrites=false"
     )
 
   def assign_pin(self, pin_info):
@@ -20,10 +24,10 @@ class PINMongoClient:
   def retrieve_pin(self, client_id):
     db = self.mongo_client.pin_manager
 
-    return db.pin.find_one({'client_id': client_id})
+    return db.pin.find_one({"client_id": client_id})
 
   def set_new_password(self, client_id, new_password):
     db = self.mongo_client.pin_manager
 
-    return db.pin.update({'client_id': client_id}, {'$set': { 'password': new_password }})
+    return db.pin.update({"client_id": client_id}, {"$set": { "password": new_password }})
 
