@@ -8,8 +8,7 @@ workflows:
   deploy:
     jobs:
       - pytest/pytest:
-          install_args:
-            - '-r requirements.txt'
+          install_args: '-r requirements.txt'
       - zappa/zappa-deploy:
           requires:
             - pytest/pytest
