@@ -10,6 +10,9 @@ workflows:
       - pytest/pytest:
           install_args: '-r requirements.txt'
       - zappa/zappa-deploy:
+        filters:
+          branches:
+            only: master
           requires:
             - pytest/pytest
           python_version: '3.6'
