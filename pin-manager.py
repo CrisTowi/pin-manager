@@ -18,9 +18,11 @@ def assign_pin():
   pin = request.json["pin"]
   password = request.json["password"]
 
+  # Encrypt credentials
   encrypted_pin = encrypt_pin(pin)
   encrypted_password = encrypt_password(password)
 
+  # Make query to assign PIN to the DB
   try:
     mongo_client.assign_pin({
       "card_id": card_id,
@@ -37,13 +39,17 @@ def retrieve_pin():
   card_id = request.json["card_id"]
   password = request.json["password"]
 
+  # Ecrypt plain password
   encrypted_password = encrypt_password(password)
 
+  # Make query to get the pin from the DB with card id as parameter
   try:
     card_pin = mongo_client.retrieve_pin(card_id)
   except Exception as err:
     return err.args[0], 404
 
+  # If encrypted plain password and password from DB
+  # are equals then we retreive the decrypted PIN
   if encrypted_password == card_pin["password"]:
     decrypted_pin = decrypt_pin(card_pin["pin"])
     return decrypted_pin, 200
@@ -63,6 +69,8 @@ def reset_password():
   except Exception as err:
     return err.args[0], 404
 
+  # If encrypted plain password and password from DB
+  # are equals then set the new encrypted plain password
   if encrypted_password == card_pin["password"]:
     encrypted_new_password = encrypt_password(new_password)
 
