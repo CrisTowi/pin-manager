@@ -46,9 +46,9 @@ Assign a PIN to the card  with a password to retrieve later.
 
 ```
 {
- "card_id": "string",
- "password": "string",
- "pin": "string"
+ "card_id": "string of 4 digits",
+ "password": "string bigger than 3 and lower than 30 characters",
+ "pin": "string of 16 digits"
 }
 ```
 
@@ -60,8 +60,8 @@ Retrieve PIN from a card with the ID and the correct password.
 
 ```
 {
- "card_id": "string",
- "password": "string",
+ "card_id": "string of 4 digits",
+ "password": "string bigger than 3 and lower than 30 characters",
 }
 ```
 
@@ -73,8 +73,8 @@ Reset password from a card with the correct password and a new password to be as
 
 ```
 {
- "card_id": "string",
- "new_password": "string",
- "password": "sting"
+ "card_id": "string of 4 digits",
+ "new_password": "string bigger than 3 and lower than 30 characters",
+ "password": "string bigger than 3 and lower than 30 characters"
 }
 ```
