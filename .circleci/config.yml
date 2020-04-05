@@ -10,10 +10,9 @@ workflows:
       - pytest/pytest
       - zappa/zappa-deploy:
           requires:
-            - test
+            - pytest/pytest
           python_version: '3.6'
           stage: prod
-
       - zappa/zappa-deploy:
           filters:
             branches:
