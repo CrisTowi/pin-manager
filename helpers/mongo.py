@@ -28,7 +28,7 @@ class PINMongoClient:
       return db.pin.insert_one(pin_info)
 
     # If card PIN already exists then raise an issue
-    raise Exception("Card already has a PIN assigned")  
+    raise Exception("This card already has a PIN assigned")
 
   def retrieve_pin(self, card_id):
     db = self.mongo_client.pin_manager
@@ -37,7 +37,7 @@ class PINMongoClient:
 
     # If there is no card with the ID then raise an issue
     if not card_pin:
-      raise Exception("No card with the id")  
+      raise Exception("No card with the ID")
 
     return card_pin
 
@@ -48,7 +48,7 @@ class PINMongoClient:
 
     # If there is no card with the ID then raise an issue
     if not card_pin:
-      raise Exception("No card with the id")
+      raise Exception("No card with the ID")
 
     return db.pin.update({"card_id": card_id}, {"$set": { "password": new_password }})
 

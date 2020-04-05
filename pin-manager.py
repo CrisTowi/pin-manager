@@ -5,6 +5,14 @@ from flask import Flask, request
 # Helpers
 from helpers.mongo import PINMongoClient
 from helpers.crypto import encrypt_pin, decrypt_pin, encrypt_password
+from helpers.validate import (
+  validate_assign_pin,
+  validate_retreive_pin,
+  validate_reset_password,
+  is_valid_pin,
+  is_valid_card_id,
+  is_valid_password,
+)
 
 # Flash config
 app = Flask(__name__)
@@ -17,6 +25,11 @@ def assign_pin():
   card_id = request.json["card_id"]
   pin = request.json["pin"]
   password = request.json["password"]
+
+  try:
+    validate_assign_pin(card_id, pin, password)
+  except Exception as err:
+    return err.args[0], 400
 
   # Encrypt credentials
   encrypted_pin = encrypt_pin(pin)
@@ -38,6 +51,11 @@ def assign_pin():
 def retrieve_pin():
   card_id = request.json["card_id"]
   password = request.json["password"]
+
+  try:
+    validate_retreive_pin(card_id, password)
+  except Exception as err:
+    return err.args[0], 400
 
   # Ecrypt plain password
   encrypted_password = encrypt_password(password)
@@ -61,6 +79,11 @@ def reset_password():
   card_id = request.json["card_id"]
   password = request.json["password"]
   new_password = request.json["new_password"]
+
+  try:
+    validate_reset_password(card_id, password, new_password)
+  except Exception as err:
+    return err.args[0], 400
 
   encrypted_password = encrypt_password(password)
 
