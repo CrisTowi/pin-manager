@@ -1,13 +1,16 @@
 orbs:
   zappa: 'borb/zappa@0.1.0'
+  pytest: thekevjames/pytest@0.0.60
 version: 2.1
+jobs:
+
 workflows:
   deploy:
     jobs:
+      - pytest/pytest
       - zappa/zappa-deploy:
-          filters:
-            branches:
-              only: master
+          requires:
+            - test
           python_version: '3.6'
           stage: prod
 
