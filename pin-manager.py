@@ -30,7 +30,7 @@ def assign_pin():
   except Exception as err:
     return err.args[0], 500
 
-  return "Success", 200
+  return "Success assigning pin", 200
 
 @app.route("/retrieve_pin", methods=["POST"])
 def retrieve_pin():
@@ -67,10 +67,10 @@ def reset_password():
     encrypted_new_password = encrypt_password(new_password)
 
     mongo_client.set_new_password(card_id, encrypted_new_password)
-    return "Success", 200
+    return "Success updating password", 200
 
   return "Invalid password", 403
 
 # We only need this for local development.
 if __name__ == "__main__":
-  app.run()
+  app.run(host='0.0.0.0', port=5000)

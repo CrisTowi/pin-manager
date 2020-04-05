@@ -21,10 +21,10 @@ class PINMongoClient:
 
     card_pin = db.pin.find_one({"card_id": pin_info["card_id"]})
 
-    if card_pin["pin"]:
-      raise Exception("Card already has a PIN assigned")  
+    if not card_pin:
+      return db.pin.insert_one(pin_info)
 
-    return db.pin.insert_one(pin_info)
+    raise Exception("Card already has a PIN assigned")  
 
   def retrieve_pin(self, card_id):
     db = self.mongo_client.pin_manager
