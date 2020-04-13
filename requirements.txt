@@ -1,5 +1,6 @@
-cryptography==2.9
+cryptography==2.8
 Flask==1.1.2
 zappa==0.51.0
 pymongo==3.10.1
 pytest==5.4.1
+Werkzeug==0.16.1
